@@ -1,0 +1,30 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    stpes:
+      - name: checkout code
+        uses: action/checkout@v3
+        with:
+          fetch-depth:0
+      
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --glonal user.email 'github-actions@github.com'
+
+      - name: Merge dev into prod
+        run: |
+          git checkout prod
+          git merge dev --no-ff --no-edit
+          git push origin prod
+        env:
+          GITHUB_TOKEN: ${{ secrets.SAMPLE_GIT }}
+
